@@ -1,9 +1,11 @@
+require "rspec/autorun"
+
 class Search
+	#commented for the purpose of spec report
 	def initialize
 		puts "App Stared ......!"
-		number_letters
-		read_dictionary
-		
+		# number_letters 
+		# read_dictionary
 	end
 	def number_letters
 		@letters = {"2" => ["a", "b", "c"],"3" => ["d", "e", "f"],"4" => ["g", "h", "i"],"5" => ["j", "k", "l"],"6" => ["m", "n", "o"],"7" => ["p", "q", "r", "s"],"8" => ["t", "u", "v"],"9" => ["w", "x", "y", "z"]}
@@ -69,4 +71,46 @@ end
 Search.new
 
 
+describe Search, "Search" do
+  it "False Senario - validating phone number - including 0 and 1" do
+    is_validate = Search.new.validate_phone_number("123456890")
+    expect(is_validate).to eq(false)
+  end
 
+  it "False Senario - validating phone number - length" do
+    is_validate = Search.new.validate_phone_number("23456890")
+    expect(is_validate).to eq(false)
+  end
+
+  it "False Senario - validating phone number - nil input" do
+    is_validate = Search.new.validate_phone_number("")
+    expect(is_validate).to eq(false)
+  end
+
+  it "Success Senario - validating phone number" do
+    is_validate = Search.new.validate_phone_number("2255225525")
+    expect(is_validate).to eq(true)
+  end
+
+  it "Success Senario - reading dictionary file" do 
+  	file_path = File.join(File.dirname(__FILE__), 'dictionary.txt')
+  	expect(file_path).to eq("./dictionary.txt")
+  end
+
+  it "Success senario - reading txt file and listing words" do 
+  	@dictionary = []
+	file_path = File.join(File.dirname(__FILE__), 'dictionary.txt')
+	@dictionary = File.readlines(file_path).map { |w| w.chomp.downcase }.uniq
+  	expect(@dictionary.length > 0).to eq(true)
+  end
+
+  it "Fail senario - if dictionary is not available" do
+  	@dictionary = []
+	file_path = File.join(File.dirname(__FILE__), 'dictionfary.txt')
+	@dictionary = File.readlines(file_path).map { |w| w.chomp.downcase }.uniq
+  	expect(@dictionary.length > 0).to eq(true)
+  	# expect { raise Errno::ENOENT }.to raise_error
+  	expect { raise "file not find" }.to raise_error(Errno::ENOENT)
+  end
+  
+end
